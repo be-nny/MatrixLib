@@ -1,10 +1,11 @@
 package matrix;
-
+/**
+ * @author Ben Abbott
+ * */
 import java.awt.*;
 import java.text.DecimalFormat;
 
 public class MyMatrix {
-
     private float[][] matrix;
     private int width;
     private int height;
