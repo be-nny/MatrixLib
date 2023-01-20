@@ -12,10 +12,10 @@ public abstract class MyMatrixMath {
      * @throws MatrixException 'MatrixMultiplicationError' when the height of m1 isn't the same as the width of m2
      * */
     public static MyMatrix multiply(MyMatrix m1, MyMatrix m2) throws MatrixException {
-        if(m1.getHeight() != m2.getWidth()){
+        if(m1.getCols() != m2.getRows()){
             throw new MatrixException("MatrixMultiplicationError");
         } else{
-            float[][] res = new float[m1.getMatrixDimen().height][m2.getMatrixDimen().width];
+            float[][] res = new float[m1.getRows()][m2.getCols()];
             float store;
             for(int k = 0; k < m2.getMatrixDimen().width; k ++){
                 for(int i = 0; i < m1.getMatrixDimen().height; i ++){
@@ -27,6 +27,28 @@ public abstract class MyMatrixMath {
                 }
             }
 
+            return new MyMatrix(res);
+        }
+    }
+
+    /**
+     * @apiNote Matrices must be of the same dimension
+     * @param m1 MyMatrix
+     * @param m2 MyMatrix
+     * @return result of m1*m2
+     * @throws MatrixException 'MatrixDimensionError' when the matrices aren't the same size
+     * */
+    public static MyMatrix add(MyMatrix m1, MyMatrix m2) throws MatrixException {
+        if(m1.getMatrixDimen() != m2.getMatrixDimen()){
+            throw new MatrixException("MatrixDimensionError");
+        } else{
+            float[][] res = new float[m1.getMatrixDimen().height][m1.getMatrixDimen().width];
+
+            for(int i = 0; i < m1.getRows(); i ++){
+                for(int j = 0; j < m1.getCols(); j ++){
+                    res[i][j] = m1.getMatrix()[i][j] + m2.getMatrix()[i][j];
+                }
+            }
             return new MyMatrix(res);
         }
     }
@@ -119,7 +141,7 @@ public abstract class MyMatrixMath {
 
             MyMatrix transposed = transpose(new MyMatrix(inverse));
             float det = determinant3(m1);
-            if(det > 0){
+            if(det != 0){
                 return constMultiply(transposed, 1/det);
             } else{
                 throw new MatrixException("NoMatrixInverseException");
@@ -185,7 +207,7 @@ public abstract class MyMatrixMath {
      * Private method called when inverting a 3x3 matrix
      * @return Newly transposed matrix
      * */
-    private static MyMatrix transpose(MyMatrix m1){
+    public static MyMatrix transpose(MyMatrix m1){
         float[][] temp = m1.getMatrix();
 
         temp[0][1] = m1.getMatrix()[1][0];

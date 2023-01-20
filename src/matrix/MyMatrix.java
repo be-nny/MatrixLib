@@ -2,6 +2,7 @@ package matrix;
 /**
  * @author Ben Abbott
  * */
+
 import java.awt.*;
 import java.text.DecimalFormat;
 
@@ -36,14 +37,14 @@ public class MyMatrix {
     /**
      * @return Matrix width - the number of columns
      * */
-    public int getWidth(){
+    public int getCols(){
         return this.width;
     }
 
     /**
      * @return Matrix height - the number of rows
      * */
-    public int getHeight(){
+    public int getRows(){
         return this.height;
     }
 
@@ -51,12 +52,10 @@ public class MyMatrix {
      * Displays the matrix list
      * */
     public void displayMatrix(){
-        DecimalFormat df = new DecimalFormat(".####");
-
         for(float[] row: this.matrix){
             String output = "";
             for(float val: row){
-                String disVal = df.format(val) + "    ";
+                String disVal = String.valueOf(val) + "    ";
                 output += disVal;
             }
             System.out.println(output);
