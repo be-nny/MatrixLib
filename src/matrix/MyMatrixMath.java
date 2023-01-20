@@ -22,8 +22,8 @@ public abstract class MyMatrixMath {
         } else{
             float[][] res = new float[m1.getRows()][m2.getCols()];
             float store;
-            for(int k = 0; k < m2.getMatrixDimen().width; k ++){
-                for(int i = 0; i < m1.getMatrixDimen().height; i ++){
+            for(int k = 0; k < m2.getCols(); k ++){
+                for(int i = 0; i < m1.getRows(); i ++){
                     store = 0;
                     for(int j = 0; j < m1.getMatrixDimen().width; j ++){
                         store += m1.getMatrix()[i][j] * m2.getMatrix()[i][k];
@@ -48,7 +48,7 @@ public abstract class MyMatrixMath {
         if(m1.getMatrixDimen() != m2.getMatrixDimen()){
             throw new MatrixException("MatrixDimensionError");
         } else{
-            float[][] res = new float[m1.getMatrixDimen().height][m1.getMatrixDimen().width];
+            float[][] res = new float[m1.getRows()][m1.getCols()];
 
             for(int i = 0; i < m1.getRows(); i ++){
                 for(int j = 0; j < m1.getCols(); j ++){
@@ -67,13 +67,12 @@ public abstract class MyMatrixMath {
      * */
     @Contract("_, _ -> new")
     public static @NotNull MyMatrix constMultiply(@NotNull MyMatrix m1, @NotNull float multiplier){
-        float[][] res = new float[m1.getMatrixDimen().height][m1.getMatrixDimen().width];
-        for(int j = 0; j < m1.getMatrixDimen().height; j ++){
-            for(int i = 0; i < m1.getMatrixDimen().width; i ++){
+        float[][] res = new float[m1.getRows()][m1.getCols()];
+        for(int j = 0; j < m1.getRows(); j ++){
+            for(int i = 0; i < m1.getCols(); i ++){
                 res[j][i] = m1.getMatrix()[j][i] * multiplier;
             }
         }
-
         return new MyMatrix(res);
     }
 
@@ -95,7 +94,7 @@ public abstract class MyMatrixMath {
      * @throws MatrixException 'Matrix2DInverseError' when matrix is strictly not a 2x2 matrix
      * */
     public static @NotNull MyMatrix inverse2(@NotNull MyMatrix m1) throws MatrixException {
-        if(m1.getMatrixDimen().width == 2 && m1.getMatrixDimen().height == 2){
+        if(m1.getCols() == 2 && m1.getRows() == 2){
             float[][] new_mat = new float[2][2];
 
             new_mat[0][0] = m1.getMatrix()[1][1];
@@ -130,7 +129,7 @@ public abstract class MyMatrixMath {
 
         float[][] inverse = new float[3][3];
 
-        if(m1.getMatrixDimen().width == 3 && m1.getMatrixDimen().height == 3){
+        if(m1.getCols() == 3 && m1.getRows() == 3){
             for(int j = 0; j < 3; j ++){
                 for(int i = 0; i < 3; i ++){
                     int x1 = Math.floorMod(i+1, 3);
