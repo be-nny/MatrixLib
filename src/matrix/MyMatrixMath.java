@@ -1,4 +1,8 @@
 package matrix;
+
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
 /**
  * @author Ben Abbott
  * */
@@ -11,7 +15,8 @@ public abstract class MyMatrixMath {
      * @return result of m1*m2
      * @throws MatrixException 'MatrixMultiplicationError' when the height of m1 isn't the same as the width of m2
      * */
-    public static MyMatrix multiply(MyMatrix m1, MyMatrix m2) throws MatrixException {
+    @Contract("_, _ -> new")
+    public static @NotNull MyMatrix multiply(@NotNull MyMatrix m1, @NotNull MyMatrix m2) throws MatrixException {
         if(m1.getCols() != m2.getRows()){
             throw new MatrixException("MatrixMultiplicationError");
         } else{
@@ -38,7 +43,8 @@ public abstract class MyMatrixMath {
      * @return result of m1*m2
      * @throws MatrixException 'MatrixDimensionError' when the matrices aren't the same size
      * */
-    public static MyMatrix add(MyMatrix m1, MyMatrix m2) throws MatrixException {
+    @Contract("_, _ -> new")
+    public static @NotNull MyMatrix add(@NotNull MyMatrix m1, @NotNull MyMatrix m2) throws MatrixException {
         if(m1.getMatrixDimen() != m2.getMatrixDimen()){
             throw new MatrixException("MatrixDimensionError");
         } else{
@@ -59,7 +65,8 @@ public abstract class MyMatrixMath {
      * @param multiplier Constant that multiplies all values in m1
      * @return New matrix with multiplied values
      * */
-    public static MyMatrix constMultiply(MyMatrix m1, float multiplier){
+    @Contract("_, _ -> new")
+    public static @NotNull MyMatrix constMultiply(@NotNull MyMatrix m1, @NotNull float multiplier){
         float[][] res = new float[m1.getMatrixDimen().height][m1.getMatrixDimen().width];
         for(int j = 0; j < m1.getMatrixDimen().height; j ++){
             for(int i = 0; i < m1.getMatrixDimen().width; i ++){
@@ -75,7 +82,7 @@ public abstract class MyMatrixMath {
      * @param m1 Matrix
      * @return The determinant of the input matrix
      * */
-    public static float determinant2(MyMatrix m1){
+    public static float determinant2(@NotNull MyMatrix m1){
         float det = (m1.getMatrix()[0][0] * m1.getMatrix()[1][1]) - (m1.getMatrix()[0][1] * m1.getMatrix()[1][0]);
         return (float) det;
     }
@@ -87,7 +94,7 @@ public abstract class MyMatrixMath {
      * @return The determinant of the input matrix
      * @throws MatrixException 'Matrix2DInverseError' when matrix is strictly not a 2x2 matrix
      * */
-    public static MyMatrix inverse2(MyMatrix m1) throws MatrixException {
+    public static @NotNull MyMatrix inverse2(@NotNull MyMatrix m1) throws MatrixException {
         if(m1.getMatrixDimen().width == 2 && m1.getMatrixDimen().height == 2){
             float[][] new_mat = new float[2][2];
 
@@ -114,7 +121,7 @@ public abstract class MyMatrixMath {
      * <li><strong>'NoMatrixInverseException'</strong> when the determinant is equal to 0</li>
 
      * */
-    public static MyMatrix inverse3(MyMatrix m1) throws MatrixException {
+    public static @NotNull MyMatrix inverse3(@NotNull MyMatrix m1) throws MatrixException {
         int[][] negatives = {
                 {1,-1,1},
                 {-1,1,-1},
@@ -154,7 +161,7 @@ public abstract class MyMatrixMath {
      * Private method for extracting smaller matrices from a 3x3 matrix when finding its inverse
      * @return 2x2 matrix
      * */
-    private static float[][] extract2DMatrix(MyMatrix m1, int x1, int y1, int x2, int y2){
+    private static float[] @NotNull [] extract2DMatrix(@NotNull MyMatrix m1, int x1, int y1, int x2, int y2){
         float[][] matrix = m1.getMatrix();
 
         if(x1 > x2){
@@ -207,7 +214,8 @@ public abstract class MyMatrixMath {
      * Private method called when inverting a 3x3 matrix
      * @return Newly transposed matrix
      * */
-    public static MyMatrix transpose(MyMatrix m1){
+    @Contract("_ -> new")
+    public static @NotNull MyMatrix transpose(@NotNull MyMatrix m1){
         float[][] temp = m1.getMatrix();
 
         temp[0][1] = m1.getMatrix()[1][0];
