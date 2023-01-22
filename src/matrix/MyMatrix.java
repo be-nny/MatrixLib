@@ -4,7 +4,6 @@ package matrix;
  * */
 
 import java.awt.*;
-import java.text.DecimalFormat;
 
 public class MyMatrix {
     private float[][] matrix;

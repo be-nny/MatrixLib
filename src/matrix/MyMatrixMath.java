@@ -1,5 +1,7 @@
 package matrix;
 
+import exception.MatrixDimensionError;
+import exception.MatrixInverseError;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -7,25 +9,26 @@ import org.jetbrains.annotations.NotNull;
  * @author Ben Abbott
  * */
 public abstract class MyMatrixMath {
+
     /**
      * @apiNote The order in which the matrices are multiplied matters.
      * @see <a href="https://en.wikipedia.org/wiki/Matrix_multiplication">Matrices Multiplication</a>
      * @param m1 MyMatrix
      * @param m2 MyMatrix
      * @return result of m1*m2
-     * @throws MatrixException 'MatrixMultiplicationError' when the height of m1 isn't the same as the width of m2
+     * @throws MatrixDimensionError when the height of m1 isn't the same as the width of m2
      * */
     @Contract("_, _ -> new")
-    public static @NotNull MyMatrix multiply(@NotNull MyMatrix m1, @NotNull MyMatrix m2) throws MatrixException {
+    public static @NotNull MyMatrix multiply(@NotNull MyMatrix m1, @NotNull MyMatrix m2) throws MatrixDimensionError {
         if(m1.getCols() != m2.getRows()){
-            throw new MatrixException("MatrixMultiplicationError");
+            throw new MatrixDimensionError("m1 column count is not the same as m2 row count");
         } else{
             float[][] res = new float[m1.getRows()][m2.getCols()];
             float store;
             for(int k = 0; k < m2.getCols(); k ++){
-                for(int i = 0; i < m1.getRows(); i ++){
+                for(byte i = 0; i < m1.getRows(); i ++){
                     store = 0;
-                    for(int j = 0; j < m1.getMatrixDimen().width; j ++){
+                    for(byte j = 0; j < m1.getMatrixDimen().width; j ++){
                         store += m1.getMatrix()[i][j] * m2.getMatrix()[i][k];
                     }
                     res[i][k] = store;
@@ -41,17 +44,17 @@ public abstract class MyMatrixMath {
      * @param m1 MyMatrix
      * @param m2 MyMatrix
      * @return result of m1*m2
-     * @throws MatrixException 'MatrixDimensionError' when the matrices aren't the same size
+     * @throws MatrixDimensionError when the matrices aren't the same size
      * */
     @Contract("_, _ -> new")
-    public static @NotNull MyMatrix add(@NotNull MyMatrix m1, @NotNull MyMatrix m2) throws MatrixException {
+    public static @NotNull MyMatrix add(@NotNull MyMatrix m1, @NotNull MyMatrix m2) throws MatrixDimensionError {
         if(m1.getMatrixDimen() != m2.getMatrixDimen()){
-            throw new MatrixException("MatrixDimensionError");
+            throw new MatrixDimensionError("matrices are not the same size. Ensure they have the same row and column size");
         } else{
             float[][] res = new float[m1.getRows()][m1.getCols()];
 
-            for(int i = 0; i < m1.getRows(); i ++){
-                for(int j = 0; j < m1.getCols(); j ++){
+            for(byte i = 0; i < m1.getRows(); i ++){
+                for(byte j = 0; j < m1.getCols(); j ++){
                     res[i][j] = m1.getMatrix()[i][j] + m2.getMatrix()[i][j];
                 }
             }
@@ -68,8 +71,8 @@ public abstract class MyMatrixMath {
     @Contract("_, _ -> new")
     public static @NotNull MyMatrix constMultiply(@NotNull MyMatrix m1, @NotNull float multiplier){
         float[][] res = new float[m1.getRows()][m1.getCols()];
-        for(int j = 0; j < m1.getRows(); j ++){
-            for(int i = 0; i < m1.getCols(); i ++){
+        for(byte j = 0; j < m1.getRows(); j ++){
+            for(byte i = 0; i < m1.getCols(); i ++){
                 res[j][i] = m1.getMatrix()[j][i] * multiplier;
             }
         }
@@ -91,9 +94,9 @@ public abstract class MyMatrixMath {
      * @see <a href="https://www.cuemath.com/algebra/inverse-of-3x3-matrix/">See how to find the inverse of a 2x2 matrix</a>
      * @param m1 Matrix
      * @return The determinant of the input matrix
-     * @throws MatrixException 'Matrix2DInverseError' when matrix is strictly not a 2x2 matrix
+     * @throws MatrixDimensionError when matrix is strictly not a 2x2 matrix
      * */
-    public static @NotNull MyMatrix inverse2(@NotNull MyMatrix m1) throws MatrixException {
+    public static @NotNull MyMatrix inverse2(@NotNull MyMatrix m1) throws MatrixDimensionError {
         if(m1.getCols() == 2 && m1.getRows() == 2){
             float[][] new_mat = new float[2][2];
 
@@ -106,7 +109,7 @@ public abstract class MyMatrixMath {
             float det = determinant2(mat);
             return constMultiply(mat, 1/det);
         } else{
-            throw new MatrixException("Matrix2DInverseError");
+            throw new MatrixDimensionError("Matrices must have row and column size of 2");
         }
     }
 
@@ -115,12 +118,10 @@ public abstract class MyMatrixMath {
      * @see <a href="https://www.mathcentre.ac.uk/resources/uploaded/sigma-matrices7-2009-1.pdf">How to find the inverse of a 3x3 matrix</a>
      * @param m1 Matrix
      * @return The inverse matrix of a 3x3 matrix
-     * @throws MatrixException Has multiple error messages:
-     * <li><strong>'Matrix3DInverseError'</strong> when matrix is strictly not a 3x3 matrix</li>
-     * <li><strong>'NoMatrixInverseException'</strong> when the determinant is equal to 0</li>
-
+     * @throws MatrixDimensionError when matrix is strictly not a 3x3 matrix
+     * @throws MatrixInverseError when matrix determinant is equal to 0 i.e., has no inverse
      * */
-    public static @NotNull MyMatrix inverse3(@NotNull MyMatrix m1) throws MatrixException {
+    public static @NotNull MyMatrix inverse3(@NotNull MyMatrix m1) throws MatrixDimensionError, MatrixInverseError {
         int[][] negatives = {
                 {1,-1,1},
                 {-1,1,-1},
@@ -130,8 +131,8 @@ public abstract class MyMatrixMath {
         float[][] inverse = new float[3][3];
 
         if(m1.getCols() == 3 && m1.getRows() == 3){
-            for(int j = 0; j < 3; j ++){
-                for(int i = 0; i < 3; i ++){
+            for(byte j = 0; j < 3; j ++){
+                for(byte i = 0; i < 3; i ++){
                     int x1 = Math.floorMod(i+1, 3);
                     int x2 = Math.floorMod(i+2, 3);
                     int y1 = Math.floorMod(j+1, 3);
@@ -150,10 +151,10 @@ public abstract class MyMatrixMath {
             if(det != 0){
                 return constMultiply(transposed, 1/det);
             } else{
-                throw new MatrixException("NoMatrixInverseException");
+                throw new MatrixDimensionError("NoMatrixInverseException");
             }
         }
-        throw new MatrixException("Matrix3DInverseError");
+        throw new MatrixInverseError("Matrix has no inverse");
     }
 
     /**
@@ -193,7 +194,7 @@ public abstract class MyMatrixMath {
         float det = 0;
         int[] neg = {1,-1,1};
 
-        for(int i = 0; i < 3; i ++){
+        for(byte i = 0; i < 3; i ++){
             float val = m1.getMatrix()[0][i];
 
             int x1 = Math.floorMod(i+1, 3);
@@ -215,14 +216,14 @@ public abstract class MyMatrixMath {
      * */
     @Contract("_ -> new")
     public static @NotNull MyMatrix transpose(@NotNull MyMatrix m1){
-        float[][] temp = m1.getMatrix();
+        float[][] temp = new float[m1.getMatrixDimen().height][m1.getMatrixDimen().width];
 
-        temp[0][1] = m1.getMatrix()[1][0];
-        temp[1][0] = m1.getMatrix()[0][1];
-        temp[0][2] = m1.getMatrix()[2][0];
-        temp[2][0] = m1.getMatrix()[0][2];
-        temp[1][2] = m1.getMatrix()[2][1];
-        temp[2][1] = m1.getMatrix()[1][2];
+        for(byte y = 0; y < m1.getMatrixDimen().height; y ++){
+            for(byte x = 0; x < m1.getMatrixDimen().width; x ++){
+                temp[y][x] = m1.getMatrix()[x][y];
+            }
+        }
+
         return new MyMatrix(temp);
     }
 }
